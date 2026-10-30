@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vé của tôi · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">02 / Vé tham dự</span>
+        <h1>Vé của tôi</h1>
+        <p>Các vé đã đăng ký được lưu theo tài khoản. Bạn có thể mở lại mã QR sau khi đăng nhập.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="section-heading">
+        <h2>Danh sách vé</h2>
+        <span class="muted small" id="ticket-count"></span>
+      </div>
+      <div id="ticket-list" class="grid"><p class="empty">Đang tải vé của bạn...</p></div>
+      <dialog id="cancel-dialog" class="confirm-dialog" aria-labelledby="cancel-title">
+        <h2 id="cancel-title">Hủy vé tham dự?</h2>
+        <p id="cancel-description">Vé QR sẽ không còn hiệu lực. Chỗ của bạn được trả lại cho sự kiện.</p>
+        <div class="actions">
+          <button class="btn secondary" id="keep-ticket" type="button">Giữ vé</button>
+          <button class="btn danger" id="confirm-cancel" type="button">Xác nhận hủy vé</button>
+        </div>
+      </dialog>
+    </main>
+    <script type="module" src="/js/my-tickets.js"></script>
+  </body>
+</html>

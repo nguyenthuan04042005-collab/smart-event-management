@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sự kiện · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">SEMS / Không gian sự kiện</span>
+        <h1>Mỗi sự kiện, một trải nghiệm trọn vẹn.</h1>
+        <p>Tạo sự kiện, phát hành vé QR, đón khách và xem phản hồi trên cùng một website.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="stats" aria-label="Tổng quan sự kiện">
+        <div class="stat">
+          <strong id="total-events">0</strong>
+          <span>Tổng sự kiện</span>
+        </div>
+        <div class="stat">
+          <strong id="open-events">0</strong>
+          <span>Đang nhận đăng ký</span>
+        </div>
+        <div class="stat">
+          <strong id="total-tickets">0</strong>
+          <span>Vé đã phát hành</span>
+        </div>
+        <div class="stat">
+          <strong>Miễn phí</strong>
+          <span>Đăng ký &amp; nhận vé QR</span>
+        </div>
+      </div>
+      <div class="two events-layout">
+        <section>
+          <div class="section-heading">
+            <h2>Danh sách sự kiện</h2>
+            <div class="actions section-actions"><span class="muted small" id="event-count"></span><button type="button" class="btn" id="create-event-shortcut" hidden>Tạo sự kiện</button></div>
+          </div>
+          <div class="toolbar">
+            <div>
+              <label for="search">Tìm sự kiện</label>
+              <input type="search" id="search" placeholder="Tên sự kiện, địa điểm..." />
+            </div>
+            <div>
+              <label for="filter">Trạng thái đăng ký</label>
+              <select id="filter">
+                <option value="all">Tất cả</option>
+                <option value="open">Đang mở</option>
+                <option value="closed">Đã đóng / hết vé</option>
+              </select>
+            </div>
+            <div><label for="category-filter">Danh mục</label><select id="category-filter"><option value="all">Tất cả</option><option value="TECHNOLOGY">Công nghệ</option><option value="ENTERTAINMENT">Giải trí</option><option value="EDUCATION">Giáo dục</option><option value="OTHER">Khác</option></select></div>
+          </div>
+          <div id="event-list" class="grid"><p class="empty">Đang tải sự kiện...</p></div>
+        </section>
+        <aside>
+          <div class="card" id="editor" hidden>
+            <h2 id="editor-title">Tạo sự kiện</h2>
+            <p class="muted small">Tạo nội dung sự kiện, gửi duyệt rồi mở đăng ký vé miễn phí.</p>
+            <form id="event-form">
+              <input id="event-id" type="hidden" />
+              <label for="title">Tên sự kiện</label>
+              <input id="title" maxlength="180" required />
+              <label for="description">Mô tả</label>
+              <textarea id="description"></textarea>
+              <label for="category">Danh mục</label>
+              <select id="category"><option value="TECHNOLOGY">Công nghệ</option><option value="ENTERTAINMENT">Giải trí</option><option value="EDUCATION">Giáo dục</option><option value="OTHER">Khác</option></select>
+              <label for="banner-file">Ảnh banner</label>
+              <input id="banner-file" type="file" accept="image/png,image/jpeg" />
+              <small class="field-help">Ảnh PNG hoặc JPEG, tối đa 5 MB. Nên dùng ảnh ngang.</small>
+              <img id="banner-preview" class="banner-preview" alt="Xem trước ảnh banner" hidden />
+              <button id="remove-banner" class="btn secondary" type="button" hidden>Xóa ảnh banner</button>
+              <label for="event-mode">Hình thức tổ chức</label>
+              <select id="event-mode"><option value="offline">Trực tiếp tại địa điểm</option><option value="online">Trực tuyến</option></select>
+              <div class="field-heading">
+                <label for="venue">Địa điểm</label>
+                <a href="/pages/venues.html" id="manage-venues">Quản lý địa điểm</a>
+              </div>
+              <select id="venue" required></select>
+              <div id="online-field" hidden><label for="online-url">Liên kết tham dự trực tuyến</label><input id="online-url" type="url" maxlength="500" placeholder="https://..." /></div>
+              <div class="row">
+                <div>
+                  <label for="starts">Bắt đầu</label>
+                  <input type="datetime-local" id="starts" required />
+                </div>
+                <div>
+                  <label for="ends">Kết thúc</label>
+                  <input type="datetime-local" id="ends" required />
+                </div>
+              </div>
+              <small class="field-help">
+                Giờ Việt Nam (UTC+7). Sự kiện kéo dài ít nhất 30 phút; có thể bắt đầu ngay hiện tại.
+              </small>
+              <label for="capacity">Số vé tối đa</label>
+              <input type="number" id="capacity" min="1" required />
+              <small class="field-help" id="venue-help">
+                Số vé không vượt quá sức chứa địa điểm.
+              </small>
+              <label for="event-status">Trạng thái</label>
+              <select id="event-status">
+                <option value="OPEN">Mở đăng ký</option>
+                <option value="CLOSED">Đóng đăng ký</option>
+              </select>
+              <div class="content-editor"><div class="section-heading"><h3>Lịch trình</h3><button type="button" class="btn secondary" id="add-agenda">Thêm phiên</button></div><div id="agenda-editor"></div></div>
+              <div class="content-editor"><div class="section-heading"><h3>Diễn giả & khách mời</h3><button type="button" class="btn secondary" id="add-speaker">Thêm người</button></div><div id="speaker-editor"></div></div>
+              <div class="actions">
+                <button class="btn">Lưu sự kiện</button>
+                <button type="button" id="new-event" class="btn secondary">Tạo mới</button>
+              </div>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="/js/events.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Khám phá sự kiện, đăng ký vé QR miễn phí và theo dõi hành trình tham dự cùng SEMS." />
+    <title>SEMS · Sự kiện bắt đầu từ đây</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+    <link rel="stylesheet" href="/css/public.css" />
+  </head>
+  <body class="public-page" data-page="home">
+    <a class="skip-link" href="#main">Chuyển đến nội dung</a>
+    <header class="attendee-header">
+      <div class="attendee-header-inner">
+        <a class="attendee-brand" href="/" aria-label="SEMS - Trang chủ">
+          <span class="brand-mark">S</span><span>SEMS<small>SMART EVENT MANAGEMENT SYSTEM</small></span>
+        </a>
+        <nav class="attendee-nav" aria-label="Điều hướng người tham dự">
+          <a href="/" aria-current="page">Sự kiện</a>
+          <a href="/pages/my-tickets.html">Vé của tôi</a>
+          <a href="/pages/feedback.html">Đánh giá</a>
+          <a href="/about.html">Giới thiệu</a>
+        </nav>
+        <div class="attendee-account public-account session-pending" aria-busy="true">
+          <a class="text-link" href="/login.html">Đăng nhập</a>
+          <a class="btn" href="/signup.html">Tạo tài khoản</a>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <section class="public-hero">
+        <div class="public-container hero-layout">
+          <div>
+            <p class="public-eyebrow"><span class="eyebrow-dot"></span> NỀN TẢNG SỰ KIỆN THÔNG MINH</p>
+            <h1>Mọi trải nghiệm đáng nhớ đều bắt đầu từ một sự kiện.</h1>
+            <p class="hero-lead">Khám phá chương trình bạn quan tâm, đăng ký vé QR miễn phí và xem lại vé bất cứ lúc nào trong tài khoản của mình.</p>
+            <div class="public-actions">
+              <a class="btn public-primary" href="#events">Khám phá sự kiện <span aria-hidden="true">↗</span></a>
+              <a class="public-quiet" href="/about.html">Tìm hiểu cách hoạt động <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Vé QR và check-in tại sự kiện">
+            <div class="visual-orbit orbit-one"></div>
+            <div class="visual-orbit orbit-two"></div>
+            <div class="visual-card visual-card-main">
+              <span class="visual-label">VÉ THAM DỰ</span>
+              <span class="visual-qr" aria-hidden="true">▦</span>
+              <strong>Một mã QR.<br />Một hành trình.</strong>
+              <span class="visual-foot">SEMS / EVENT ACCESS</span>
+            </div>
+            <div class="visual-card visual-card-small">
+              <span class="visual-dot"></span>
+              <span>Check-in nhanh<br /><strong>tại cổng sự kiện</strong></span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="public-section" id="events" aria-labelledby="events-heading">
+        <div class="public-container">
+          <div class="public-section-heading">
+            <div>
+              <p class="public-eyebrow">SỰ KIỆN DÀNH CHO BẠN</p>
+              <h2 id="events-heading">Khám phá sự kiện</h2>
+              <p>Xem thông tin trước, tạo tài khoản khi bạn sẵn sàng đăng ký.</p>
+            </div>
+            <a class="section-link" href="/about.html">SEMS hoạt động thế nào <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="discovery-filters" aria-label="Bộ lọc sự kiện">
+            <label>Từ khóa<input id="public-search" type="search" placeholder="Tên, mô tả, diễn giả..." /></label>
+            <label>Danh mục<select id="public-category"><option value="all">Tất cả</option><option value="TECHNOLOGY">Công nghệ</option><option value="ENTERTAINMENT">Giải trí</option><option value="EDUCATION">Giáo dục</option><option value="OTHER">Khác</option></select></label>
+            <label>Ngày bắt đầu<input id="public-date" type="date" /></label>
+            <label>Địa điểm<input id="public-place" type="search" placeholder="Địa điểm hoặc trực tuyến" /></label>
+          </div>
+          <p id="public-count" class="public-count" aria-live="polite"></p>
+          <div id="public-events" class="public-events" aria-live="polite">
+            <p class="public-empty">Đang tải danh sách sự kiện...</p>
+          </div>
+        </div>
+      </section>
+      <section class="public-process" aria-labelledby="process-heading">
+        <div class="public-container">
+          <p class="public-eyebrow">ĐƠN GIẢN TỪ ĐẦU ĐẾN CUỐI</p>
+          <h2 id="process-heading">Tham gia chỉ với ba bước</h2>
+          <div class="process-grid">
+            <article><span>01 / KHÁM PHÁ</span><h3>Chọn sự kiện</h3><p>Xem thời gian, địa điểm và nội dung chương trình ngay trên trang web.</p></article>
+            <article><span>02 / NHẬN VÉ</span><h3>Đăng ký miễn phí</h3><p>Tạo tài khoản, đăng ký và giữ vé QR trong “Vé của tôi”.</p></article>
+            <article><span>03 / THAM DỰ</span><h3>Check-in và chia sẻ</h3><p>Đưa QR cho nhân viên tại cổng; sau khi check-in, bạn có thể đánh giá sự kiện.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="public-cta">
+        <div class="public-container cta-inner">
+          <div><p class="public-eyebrow">SẴN SÀNG THAM GIA?</p><h2>Bắt đầu với sự kiện tiếp theo của bạn.</h2></div>
+          <a class="btn public-primary" href="/signup.html">Tạo tài khoản miễn phí <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </main>
+    <footer class="public-footer">
+      <div class="public-container footer-grid">
+        <div>
+          <a class="public-brand" href="/"><span class="brand-mark">S</span><span>SEMS<small>SMART EVENT MANAGEMENT SYSTEM</small></span></a>
+          <p>Đăng ký vé, check-in và chia sẻ trải nghiệm trên một nền tảng.</p>
+        </div>
+        <div><strong>Khám phá</strong><a href="/">Sự kiện</a><a href="/about.html">Giới thiệu SEMS</a></div>
+        <div><strong>Tài khoản</strong><a href="/login.html">Đăng nhập</a><a href="/signup.html">Đăng ký</a></div>
+      </div>
+      <div class="public-container footer-bottom">
+        <span>© 2026 SEMS · Smart Event Management System</span>
+        <span>Thiết kế cho trải nghiệm sự kiện thuận tiện hơn.</span>
+      </div>
+    </footer>
+    <script type="module" src="/js/public.js"></script>
+  </body>
+</html>

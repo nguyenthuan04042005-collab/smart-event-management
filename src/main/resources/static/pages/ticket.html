@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vé QR · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <div id="status" class="status"></div>
+      <p><a href="/pages/my-tickets.html">← Vé của tôi</a></p>
+      <section class="card ticket">
+        <span class="pill">Vé tham dự</span>
+        <h1 id="title">Đang tải...</h1>
+        <p><strong id="name"></strong></p>
+        <p id="venue"></p>
+        <p><a id="join-online" class="btn secondary" target="_blank" rel="noopener noreferrer" hidden>Tham dự trực tuyến</a></p>
+        <p id="time"></p>
+        <img id="qr" alt="Mã QR của vé" hidden />
+        <p class="small muted">
+          Đưa mã QR này cho nhân viên check-in. Giữ kín liên kết vé của bạn.
+        </p>
+        <p>
+          <strong>Mã vé:</strong>
+          <span id="code"></span>
+        </p>
+        <p>
+          <strong>Trạng thái:</strong>
+          <span id="state"></span>
+        </p>
+        <div class="actions" style="justify-content: center">
+          <a class="btn secondary" id="download" download="ve-qr.png">Tải ảnh QR</a>
+          <button class="btn secondary" id="refresh-ticket" type="button">
+            Cập nhật trạng thái
+          </button>
+          <a class="btn" id="feedback-link" hidden>Đánh giá sự kiện</a>
+        </div>
+        <p class="small muted" id="feedback-hint">
+          Sau khi check-in, cập nhật trạng thái để gửi đánh giá.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="/js/ticket.js"></script>
+  </body>
+</html>
+

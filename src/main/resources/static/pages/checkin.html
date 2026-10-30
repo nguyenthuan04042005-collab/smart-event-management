@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Check-in · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+    <script defer src="/vendor/html5-qrcode.min.js"></script>
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">02 / Đón khách tại cổng</span>
+        <h1>Check-in tại cổng</h1>
+        <p>Quét QR bằng camera, nhập mã vé hoặc tìm khách theo tên/email khi quên vé.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <section class="checkin-workspace" id="workspace" hidden>
+        <div class="card checkin-event-bar">
+          <div>
+            <span class="eyebrow">Sự kiện đang vận hành</span>
+            <h2>Chọn sự kiện để đón khách</h2>
+            <p id="checkin-window" class="field-help"></p>
+          </div>
+          <div class="checkin-event-select">
+            <label for="event">Sự kiện</label>
+            <select id="event"></select>
+          </div>
+        </div>
+        <div class="checkin-grid">
+          <section class="card checkin-panel checkin-camera" aria-labelledby="camera-heading">
+            <div class="checkin-panel-heading">
+              <span class="checkin-step">01</span>
+              <div>
+                <h2 id="camera-heading">Quét mã QR</h2>
+                <p>Đưa vé của khách vào khung camera để xác thực nhanh tại cổng.</p>
+              </div>
+            </div>
+            <div id="scanner" class="scanner"></div>
+            <div class="checkin-last" aria-live="polite" aria-atomic="true">
+              <h3>Kết quả check-in gần nhất</h3>
+              <div id="last-result" class="card muted">Chưa có lượt check-in.</div>
+            </div>
+            <div class="actions checkin-camera-actions">
+              <button class="btn" id="start-scan" type="button">Bật camera</button>
+              <button class="btn secondary" id="stop-scan" type="button">Tắt camera</button>
+              <button class="btn secondary" id="sound-toggle" type="button" aria-pressed="true">Âm báo: Bật</button>
+            </div>
+            <p class="muted small checkin-camera-note">
+              Trên điện thoại, trình duyệt cần HTTPS hoặc localhost để mở camera.
+            </p>
+          </section>
+          <section class="card checkin-panel checkin-manual" aria-labelledby="manual-heading">
+            <div class="checkin-panel-heading">
+              <span class="checkin-step">02</span>
+              <div>
+                <h2 id="manual-heading">Xác nhận thủ công</h2>
+                <p>Nhập mã vé hoặc tìm người tham dự khi họ không mang theo vé.</p>
+              </div>
+            </div>
+            <form id="manual-form">
+              <label for="ticket-code">Mã vé</label>
+              <input id="ticket-code" placeholder="Mã trên vé" required />
+              <div class="actions"><button class="btn">Xác nhận check-in</button></div>
+            </form>
+            <form id="search-form" class="checkin-search">
+              <label for="attendee-query">Khách quên vé? Tìm theo tên hoặc email</label>
+              <div class="actions">
+                <input id="attendee-query" type="search" minlength="2" maxlength="190" placeholder="Nhập ít nhất 2 ký tự" required />
+                <button class="btn secondary" type="submit">Tìm khách</button>
+              </div>
+            </form>
+            <div id="search-results" aria-live="polite"></div>
+            <div class="actions checkin-search-pages" id="search-pages" hidden>
+              <span id="search-count" class="small muted"></span>
+              <button class="btn secondary" id="search-prev" type="button">Trang trước</button>
+              <button class="btn secondary" id="search-next" type="button">Trang sau</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/js/checkin.js"></script>
+  </body>
+</html>
+

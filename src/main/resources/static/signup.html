@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng ký tài khoản · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+  <body class="auth-page">
+    <main class="auth-layout">
+      <section class="auth-intro" aria-label="Giới thiệu SEMS">
+        <a class="auth-brand" href="/"><span class="brand-mark">S</span> SEMS</a>
+        <span class="intro-kicker">SMART EVENT MANAGEMENT</span>
+        <h1>Đăng ký tài khoản, chọn sự kiện, nhận vé QR.</h1>
+        <p>Tài khoản người tham dự giúp bạn đăng ký vé và gửi đánh giá sau khi check-in.</p>
+        <div class="intro-steps">
+          <span><b>01</b> Tạo tài khoản</span>
+          <span><b>02</b> Chọn sự kiện</span>
+          <span><b>03</b> Nhận vé của bạn</span>
+        </div>
+      </section>
+      <section class="auth-panel">
+        <div class="auth-card">
+          <div class="auth-card-brand"><span class="brand-mark">S</span><span>SEMS<small>HỆ THỐNG QUẢN LÝ SỰ KIỆN</small></span></div>
+          <span class="auth-kicker">BẮT ĐẦU THAM GIA</span>
+          <h2>Tạo tài khoản</h2>
+          <p class="muted">Đăng ký này chỉ tạo tài khoản người tham dự. Admin cấp tài khoản nhân viên trong trang quản lý.</p>
+          <div id="auth-message" class="auth-message" role="alert" hidden></div>
+          <form id="signup-form">
+            <label for="display-name">Họ và tên</label>
+            <input id="display-name" autocomplete="name" maxlength="80" required placeholder="Nguyễn Văn A" />
+            <label for="username">Tên đăng nhập</label>
+            <input id="username" autocomplete="username" pattern="[A-Za-z0-9_.-]{3,32}" minlength="3" maxlength="32" required placeholder="3–32 ký tự: chữ, số, dấu chấm, gạch dưới" />
+            <label for="email">Email tài khoản</label>
+            <input id="email" type="email" autocomplete="email" maxlength="190" required placeholder="ban@example.com" />
+            <label for="password">Mật khẩu</label>
+            <input id="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required placeholder="Ít nhất 12 ký tự" />
+            <label for="confirm-password">Nhập lại mật khẩu</label>
+            <input id="confirm-password" type="password" autocomplete="new-password" minlength="12" required placeholder="Nhập lại mật khẩu" />
+            <button class="btn auth-submit" type="submit">Tạo tài khoản <span aria-hidden="true">→</span></button>
+          </form>
+          <form id="signup-code-form" hidden>
+            <p class="muted">Nhập mã 6 chữ số vừa gửi đến <strong id="signup-code-address"></strong>. Mã có hiệu lực 10 phút.</p>
+            <label for="signup-code">Mã xác minh email</label>
+            <input id="signup-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="6 chữ số" />
+            <button class="btn auth-submit" type="submit">Xác minh và tạo tài khoản</button>
+            <button id="signup-resend" class="btn secondary" type="button">Gửi lại mã</button>
+            <button id="signup-restart" class="btn secondary" type="button">Sửa thông tin đăng ký</button>
+          </form>
+          <p class="auth-switch">Đã có tài khoản? <a id="login-link" href="/login.html">Đăng nhập</a></p>
+        </div>
+        <p class="auth-note"><a href="/">Trang chủ</a> · <a href="/about.html">Giới thiệu</a> · © 2026 SEMS</p>
+      </section>
+    </main>
+    <script type="module" src="/js/auth.js"></script>
+  </body>
+</html>

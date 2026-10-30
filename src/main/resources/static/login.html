@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng nhập · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+  <body class="auth-page">
+    <main class="auth-layout">
+      <section class="auth-intro" aria-label="Giới thiệu SEMS">
+        <a class="auth-brand" href="/"><span class="brand-mark">S</span> SEMS</a>
+        <span class="intro-kicker">SMART EVENT MANAGEMENT</span>
+        <h1>Quản lý sự kiện trong một không gian làm việc.</h1>
+        <p>Từ đăng ký vé QR, đón khách đến thống kê và đánh giá sau sự kiện.</p>
+        <div class="intro-steps">
+          <span><b>01</b> Phát hành vé QR</span>
+          <span><b>02</b> Check-in tại cổng</span>
+          <span><b>03</b> Theo dõi trực tiếp</span>
+        </div>
+      </section>
+      <section class="auth-panel">
+        <div class="auth-card">
+          <div class="auth-card-brand"><span class="brand-mark">S</span><span>SEMS<small>HỆ THỐNG QUẢN LÝ SỰ KIỆN</small></span></div>
+          <span class="auth-kicker">CHÀO MỪNG TRỞ LẠI</span>
+          <h2>Đăng nhập</h2>
+          <p class="muted">Sử dụng tài khoản quản trị, nhân viên hoặc người tham dự.</p>
+          <div id="auth-message" class="auth-message" role="alert" hidden></div>
+          <form id="login-form" class="auth-login">
+            <label for="username">Tên đăng nhập</label>
+            <input id="username" autocomplete="username" autofocus required placeholder="Nhập tên đăng nhập" />
+            <label for="password">Mật khẩu</label>
+            <input id="password" type="password" autocomplete="current-password" required placeholder="Nhập mật khẩu" />
+            <p class="auth-forgot"><a href="/forgot-password.html">Quên mật khẩu?</a></p>
+            <button class="btn auth-submit" type="submit">Đăng nhập <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="auth-switch">Chưa có tài khoản tham dự? <a id="signup-link" href="/signup.html">Đăng ký ngay</a></p>
+        </div>
+        <p class="auth-note"><a href="/">Trang chủ</a> · <a href="/about.html">Giới thiệu</a> · © 2026 SEMS</p>
+      </section>
+    </main>
+    <script type="module" src="/js/auth.js"></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đánh giá · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">03 / Lắng nghe người tham dự</span>
+        <h1>Đánh giá sự kiện</h1>
+        <p>Khách đã check-in có thể chấm điểm một lần; ban tổ chức xem thống kê phản hồi.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="two feedback-layout">
+        <section class="card" id="feedback-entry">
+          <h2>Gửi đánh giá</h2>
+          <form id="feedback-form">
+            <label for="code">Chọn vé đã check-in của bạn</label>
+            <select id="code" required></select>
+            <p class="field-help" id="ticket-hint"></p>
+            <label for="rating">Điểm hài lòng</label>
+            <select id="rating" required>
+              <option value="5">5 sao – Rất hài lòng</option>
+              <option value="4">4 sao – Hài lòng</option>
+              <option value="3">3 sao – Bình thường</option>
+              <option value="2">2 sao – Chưa hài lòng</option>
+              <option value="1">1 sao – Không hài lòng</option>
+            </select>
+            <label for="comment">Nhận xét</label>
+            <textarea
+              id="comment"
+              maxlength="1000"
+              placeholder="Điều gì làm bạn hài lòng hoặc muốn cải thiện?"
+            ></textarea>
+            <div class="actions"><button class="btn">Gửi đánh giá</button></div>
+          </form>
+          <section class="my-feedback-section">
+            <h3>Đánh giá đã gửi</h3>
+            <div id="my-feedback-list" class="scroll-list feedback-list" tabindex="0" aria-label="Lịch sử đánh giá của tôi"></div>
+          </section>
+        </section>
+        <section>
+          <div class="card" id="summary" hidden>
+            <h2>Thống kê phản hồi</h2>
+            <label for="event">Sự kiện</label>
+            <select id="event"></select>
+            <div class="actions">
+              <button class="btn secondary" id="export-feedback" type="button">Tải CSV</button>
+              <button class="btn secondary" id="export-feedback-excel" type="button">Tải báo cáo Excel</button>
+            </div>
+            <p class="rating-summary">
+              <strong id="count">0</strong>
+              lượt đánh giá ·
+              <strong id="average">0</strong>
+              /5 sao
+            </p>
+            <div class="feedback-analytics">
+              <section class="analytics-panel" aria-labelledby="distribution-title">
+                <h3 id="distribution-title">Phân bố điểm đánh giá</h3>
+                <div id="rating-chart" class="rating-chart" aria-label="Số lượt và tỷ lệ theo từng mức sao"></div>
+              </section>
+              <section class="analytics-panel" aria-labelledby="pie-title">
+                <h3 id="pie-title">Tỷ lệ từng mức sao</h3>
+                <div class="pie-layout">
+                  <div id="rating-pie" class="rating-pie" role="img" aria-label="Chưa có đánh giá"></div>
+                  <div id="rating-legend" class="rating-legend"></div>
+                </div>
+              </section>
+            </div>
+            <section class="analytics-panel trend-panel" aria-labelledby="trend-title">
+              <div class="trend-heading">
+                <h3 id="trend-title">Xu hướng phản hồi</h3>
+                <span id="trend-period" class="small muted"></span>
+              </div>
+              <div class="trend-key small muted"><span class="trend-key-count"></span>Số phản hồi <span class="trend-key-average"></span>Điểm trung bình / 5</div>
+              <div id="feedback-trend" class="trend-chart" role="img" aria-label="Chưa có dữ liệu xu hướng"></div>
+            </section>
+            <div class="list-tools">
+              <div>
+                <label for="feedback-search">Tìm người đánh giá hoặc nhận xét</label>
+                <input id="feedback-search" type="search" placeholder="Nhập tên hoặc nội dung..." autocomplete="off" />
+              </div>
+              <div>
+                <label for="feedback-rating">Số sao</label>
+                <select id="feedback-rating">
+                  <option value="all">Tất cả</option>
+                  <option value="5">5 sao</option>
+                  <option value="4">4 sao</option>
+                  <option value="3">3 sao</option>
+                  <option value="2">2 sao</option>
+                  <option value="1">1 sao</option>
+                </select>
+              </div>
+            </div>
+            <p id="feedback-count" class="small muted" role="status"></p>
+            <p class="small muted">Biểu đồ và tệp tải xuống tính toàn bộ đánh giá; bộ lọc chỉ áp dụng cho danh sách bên dưới.</p>
+            <div id="feedback-list" class="scroll-list feedback-list" tabindex="0" aria-label="Danh sách đánh giá có thể cuộn"></div>
+            <div id="feedback-pages" class="feedback-pages" hidden>
+              <button class="btn secondary" id="feedback-prev" type="button">Trang trước</button>
+              <span id="feedback-page-label" class="small muted" aria-live="polite"></span>
+              <button class="btn secondary" id="feedback-next" type="button">Trang sau</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/js/feedback.js"></script>
+  </body>
+</html>
+

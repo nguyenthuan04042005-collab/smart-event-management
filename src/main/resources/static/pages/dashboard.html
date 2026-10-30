@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">02 / Tổng quan vận hành</span>
+        <h1>Dashboard thời gian thực</h1>
+        <p>Theo dõi đăng ký, lượt check-in và sức chứa ngay khi có thay đổi.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <section id="workspace" hidden>
+        <div class="card">
+          <label for="event">Chọn sự kiện</label>
+          <select id="event"></select>
+          <p class="small muted" id="socket-state">Đang kết nối...</p>
+          <p class="review-callout" id="event-cancel-notice" hidden></p>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <strong id="registered">0</strong>
+            <span>Đã đăng ký</span>
+          </div>
+          <div class="stat">
+            <strong id="checked">0</strong>
+            <span>Đã đến</span>
+          </div>
+          <div class="stat">
+            <strong id="attendance">0%</strong>
+            <span>Tỷ lệ tham dự</span>
+          </div>
+          <div class="stat">
+            <strong id="occupancy">0%</strong>
+            <span>Tỷ lệ lấp đầy</span>
+          </div>
+        </div>
+        <div id="capacity-alert" class="card" style="margin-top: 18px">
+          Chưa có cảnh báo sức chứa.
+        </div>
+        <div class="card">
+          <div class="section-heading">
+            <h2>Lưu lượng check-in</h2>
+            <span class="small muted" id="waiting-count">0 khách chưa đến</span>
+          </div>
+          <p class="small muted">
+            Số lượt vào theo từng khoảng 5 phút, tối đa 12 khoảng gần nhất có khách.
+          </p>
+          <div id="arrival-chart" class="chart" aria-label="Biểu đồ lượt check-in"></div>
+        </div>
+        <div class="card">
+          <div class="section-heading registration-heading">
+            <h2>Danh sách đăng ký</h2>
+            <div class="actions">
+              <button class="btn secondary export-report" data-type="registrations" type="button">Tải đăng ký CSV</button>
+              <button class="btn secondary export-report" data-type="checkins" type="button">Tải check-in CSV</button>
+            </div>
+          </div>
+          <div class="list-tools">
+            <div>
+              <label for="registration-search">Tìm khách, email hoặc mã vé</label>
+              <input id="registration-search" type="search" placeholder="Nhập tên, email, mã vé..." autocomplete="off" />
+            </div>
+            <div>
+              <label for="registration-status">Trạng thái</label>
+              <select id="registration-status">
+                <option value="all">Tất cả</option>
+                <option value="ISSUED">Chưa đến</option>
+                <option value="CHECKED_IN">Đã đến</option>
+              </select>
+            </div>
+          </div>
+          <p id="registration-count" class="small muted" role="status"></p>
+          <p class="small muted">Tìm kiếm và bộ lọc chỉ áp dụng cho danh sách đang xem; tệp CSV chứa toàn bộ dữ liệu sự kiện.</p>
+          <div class="table-wrap scroll-list" tabindex="0" aria-label="Danh sách đăng ký có thể cuộn">
+            <table>
+              <thead>
+                <tr>
+                  <th>Khách</th>
+                  <th>Email</th>
+                  <th>Đơn vị</th>
+                  <th>Chức vụ / vai trò</th>
+                  <th>Mã vé</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="registrations"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/js/dashboard.js"></script>
+  </body>
+</html>
+

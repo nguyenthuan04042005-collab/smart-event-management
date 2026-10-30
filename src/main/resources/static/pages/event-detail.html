@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chi tiết sự kiện · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <a class="detail-back" href="/pages/events.html">← Danh sách sự kiện</a>
+      <section class="hero management-detail-hero">
+        <span class="eyebrow">SEMS / THÔNG TIN SỰ KIỆN</span>
+        <h1 id="detail-title">Đang tải sự kiện...</h1>
+        <p id="detail-intro"></p>
+      </section>
+      <div id="status" class="status"></div>
+
+      <div class="management-detail-grid" id="detail-content" hidden>
+        <article class="card management-detail-main">
+          <img id="detail-banner" class="management-detail-banner" alt="Banner sự kiện" hidden />
+          <span id="detail-category" class="pill closed"></span>
+
+          <section>
+            <h2>Giới thiệu sự kiện</h2>
+            <p id="detail-description" class="management-detail-description"></p>
+          </section>
+
+          <section>
+            <h2>Lịch trình</h2>
+            <div id="detail-agenda" class="management-agenda"></div>
+          </section>
+
+          <section>
+            <h2>Diễn giả và khách mời</h2>
+            <div id="detail-speakers" class="management-speakers"></div>
+          </section>
+        </article>
+
+        <aside class="card management-detail-aside">
+          <span id="detail-approval" class="pill closed"></span>
+          <h2>Thông tin quản lý</h2>
+          <dl>
+            <div><dt>Ban tổ chức</dt><dd id="detail-organizer">—</dd></div>
+            <div><dt>Thời gian</dt><dd id="detail-time">—</dd></div>
+            <div><dt>Địa điểm</dt><dd id="detail-place">—</dd></div>
+            <div id="detail-online-row" hidden><dt>Liên kết trực tuyến</dt><dd><a id="detail-online" href="#" target="_blank" rel="noopener noreferrer">Mở liên kết</a></dd></div>
+            <div><dt>Trạng thái đăng ký</dt><dd id="detail-state">—</dd></div>
+            <div id="detail-cancel-row" hidden><dt>Lý do hủy</dt><dd id="detail-cancel-reason">—</dd></div>
+            <div><dt>Vé đã phát hành</dt><dd id="detail-capacity">—</dd></div>
+            <div id="detail-review-row" hidden><dt id="detail-review-label">Ghi chú duyệt</dt><dd id="detail-review">—</dd></div>
+          </dl>
+          <div id="detail-actions" class="actions" hidden></div>
+          <a class="btn secondary" href="/pages/events.html">Trở lại danh sách</a>
+        </aside>
+      </div>
+      <section class="card detail-extra" id="review-history-section" hidden>
+        <h2>Lịch sử xét duyệt</h2>
+        <div id="review-history" class="review-history"></div>
+      </section>
+      <section class="card detail-extra" id="staff-section" hidden>
+        <h2>Nhân viên check-in</h2>
+        <p class="muted small">Chỉ nhân viên được phân công mới tìm khách và check-in sự kiện này.</p>
+        <div class="actions">
+          <select id="staff-select" aria-label="Chọn nhân viên"></select>
+          <button class="btn" id="assign-staff" type="button">Phân công</button>
+        </div>
+        <div id="assigned-staff" class="assigned-staff"></div>
+      </section>
+      <dialog id="review-dialog" class="confirm-dialog" aria-labelledby="review-dialog-title">
+        <h2 id="review-dialog-title">Xét duyệt sự kiện</h2>
+        <p id="review-dialog-description"></p>
+        <form id="review-form">
+          <label for="review-note" id="review-note-label">Ghi chú</label>
+          <textarea id="review-note" maxlength="500" rows="4"></textarea>
+          <div class="actions">
+            <button class="btn secondary" id="close-review" type="button">Quay lại</button>
+            <button class="btn" id="confirm-review" type="submit">Xác nhận</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+    <script type="module" src="/js/event-detail.js"></script>
+  </body>
+</html>

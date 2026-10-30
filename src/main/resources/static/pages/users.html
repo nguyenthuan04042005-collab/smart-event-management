@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tài khoản · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <h1>Thông tin cá nhân</h1>
+        <p>Xem và cập nhật thông tin tài khoản của bạn.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div id="workspace" hidden>
+        <div class="two">
+          <section class="card" id="staff-management" hidden>
+            <h2>Tạo tài khoản làm việc</h2>
+            <form id="staff-form">
+              <label for="staff-username">Tên đăng nhập</label>
+              <input id="staff-username" pattern="[A-Za-z0-9_.-]{3,32}" maxlength="32" required />
+              <label for="staff-name">Họ tên</label>
+              <input id="staff-name" maxlength="80" required />
+              <label for="staff-email">Email tài khoản</label>
+              <input id="staff-email" type="email" maxlength="190" required />
+              <label for="staff-role">Vai trò</label>
+              <select id="staff-role"><option value="STAFF">Nhân viên check-in</option><option value="ORGANIZER">Ban tổ chức</option></select>
+              <label for="staff-password">Mật khẩu ban đầu</label>
+              <input id="staff-password" type="password" minlength="12" maxlength="128" required />
+              <div class="actions"><button class="btn">Tạo tài khoản</button></div>
+            </form>
+          </section>
+          <section class="card">
+            <h2>Hồ sơ của tôi</h2>
+            <dl class="profile-summary">
+              <div><dt>Tên đăng nhập</dt><dd id="profile-username">—</dd></div>
+              <div><dt>Email tài khoản</dt><dd id="my-email-state">—</dd></div>
+            </dl>
+            <form id="profile-form">
+              <label for="profile-name">Họ và tên / tên hiển thị</label>
+              <input id="profile-name" maxlength="80" autocomplete="name" required />
+              <div class="actions"><button class="btn" type="submit">Lưu họ tên</button></div>
+            </form>
+            <div class="profile-email-actions">
+              <button id="change-email-toggle" class="btn secondary" type="button" aria-expanded="false">Đổi email tài khoản</button>
+              <button id="resend-verification" class="btn secondary" type="button" hidden>Gửi lại xác minh</button>
+            </div>
+            <form id="email-form" hidden>
+              <label for="my-email">Email tài khoản mới</label>
+              <input id="my-email" type="email" maxlength="190" autocomplete="email" required />
+              <label for="email-password">Mật khẩu hiện tại để xác nhận</label>
+              <input id="email-password" type="password" autocomplete="current-password" required />
+              <div class="actions"><button class="btn" type="submit">Lưu email mới</button></div>
+            </form>
+            <form id="email-code-form" hidden>
+              <p class="muted">Nhập mã 6 chữ số đã gửi đến <strong id="email-code-address"></strong>. Email cũ vẫn được dùng cho đến khi xác minh thành công.</p>
+              <label for="email-code">Mã xác minh email mới</label>
+              <input id="email-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="6 chữ số" />
+              <div class="actions">
+                <button class="btn" type="submit">Xác minh và đổi email</button>
+                <button id="email-code-resend" class="btn secondary" type="button">Gửi lại mã</button>
+                <button id="email-code-cancel" class="btn secondary" type="button">Hủy</button>
+              </div>
+            </form>
+          </section>
+          <section class="card">
+            <h2>Đổi mật khẩu của tôi</h2>
+            <form id="password-form">
+              <label for="current-password">Mật khẩu hiện tại</label>
+              <input id="current-password" type="password" required />
+              <label for="new-password">Mật khẩu mới</label>
+              <input id="new-password" type="password" minlength="12" maxlength="128" required />
+              <div class="actions"><button class="btn">Đổi mật khẩu</button></div>
+            </form>
+          </section>
+        </div>
+        <section class="card" id="users-section" hidden>
+          <h2>Danh sách tài khoản</h2>
+          <div class="list-tools account-tools">
+            <div>
+              <label for="user-search">Tìm tài khoản hoặc họ tên</label>
+              <input id="user-search" type="search" placeholder="Nhập tên đăng nhập hoặc họ tên..." autocomplete="off" />
+            </div>
+            <div>
+              <label for="user-role">Vai trò</label>
+              <select id="user-role">
+                <option value="all">Tất cả vai trò</option>
+                <option value="ADMIN">Quản trị viên</option>
+                <option value="ORGANIZER">Ban tổ chức</option>
+                <option value="STAFF">Nhân viên</option>
+                <option value="ATTENDEE">Người tham dự</option>
+              </select>
+            </div>
+            <div>
+              <label for="user-status">Trạng thái</label>
+              <select id="user-status">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="active">Đang hoạt động</option>
+                <option value="blocked">Đã khóa</option>
+              </select>
+            </div>
+          </div>
+          <p id="user-count" class="small muted" role="status"></p>
+          <div class="table-wrap scroll-list" tabindex="0" aria-label="Danh sách tài khoản có thể cuộn">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tài khoản</th>
+                  <th>Họ tên</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="user-list"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/js/users.js"></script>
+  </body>
+</html>
+

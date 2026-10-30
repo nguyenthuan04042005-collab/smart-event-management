@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Địa điểm · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">SEMS / Quản lý địa điểm</span>
+        <h1>Địa điểm tổ chức</h1>
+        <p>Chuẩn bị địa điểm và sức chứa trước khi tạo sự kiện.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="two venues-layout">
+        <section>
+          <div class="section-heading">
+            <h2>Danh sách địa điểm</h2>
+            <span id="venue-count" class="small muted"></span>
+          </div>
+          <div id="venue-list" class="venue-list">
+            <p class="empty">Đang tải địa điểm...</p>
+          </div>
+        </section>
+        <aside class="card venue-editor">
+          <h2 id="venue-editor-title">Thêm địa điểm</h2>
+          <p class="small muted">Địa điểm mới sẽ xuất hiện trong form tạo sự kiện.</p>
+          <form id="venue-form">
+            <input id="venue-id" type="hidden" />
+            <label for="venue-name">Tên địa điểm</label>
+            <input id="venue-name" maxlength="160" required placeholder="Ví dụ: Hội trường C" />
+            <label for="venue-address">Địa chỉ</label>
+            <input id="venue-address" maxlength="255" required placeholder="Ví dụ: Tầng 3, khu C" />
+            <label for="venue-capacity">Sức chứa tối đa</label>
+            <input id="venue-capacity" type="number" min="1" step="1" required placeholder="Số người" />
+            <small class="field-help" id="venue-help">Số vé của mỗi sự kiện không được vượt quá sức chứa địa điểm.</small>
+            <div class="actions">
+              <button class="btn" id="save-venue" type="submit">Lưu địa điểm</button>
+              <button class="btn secondary" id="new-venue" type="button">Tạo mới</button>
+            </div>
+          </form>
+          <a class="section-link" href="/pages/events.html">← Quay lại sự kiện</a>
+        </aside>
+      </div>
+      <dialog id="delete-venue-dialog" class="confirm-dialog" aria-labelledby="delete-venue-title">
+        <h2 id="delete-venue-title">Xóa địa điểm?</h2>
+        <p id="delete-venue-description"></p>
+        <div class="actions">
+          <button class="btn secondary" id="keep-venue" type="button">Giữ lại</button>
+          <button class="btn danger" id="confirm-delete-venue" type="button">Xác nhận xóa</button>
+        </div>
+      </dialog>
+    </main>
+    <script type="module" src="/js/venues.js"></script>
+  </body>
+</html>

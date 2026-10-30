@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cấu hình email · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <h1>Cấu hình email</h1>
+        <p>Quản lý thư gửi vé, xác minh email và đặt lại mật khẩu.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="two">
+        <section class="card">
+          <h2>Máy chủ SMTP</h2>
+          <p class="muted">Với Gmail, dùng máy chủ smtp.gmail.com, cổng 587 và mật khẩu ứng dụng.</p>
+          <form id="settings-form">
+            <label class="mail-check"><input id="mail-enabled" type="checkbox" /> Bật gửi email</label>
+            <label for="mail-host">Máy chủ</label>
+            <input id="mail-host" maxlength="255" placeholder="smtp.gmail.com" required />
+            <label for="mail-port">Cổng</label>
+            <input id="mail-port" type="number" min="1" max="65535" value="587" required />
+            <label for="mail-user">Tài khoản SMTP</label>
+            <input id="mail-user" type="email" autocomplete="username" maxlength="190" placeholder="ten@gmail.com" required />
+            <label for="mail-from">Địa chỉ người gửi</label>
+            <input id="mail-from" type="email" maxlength="190" placeholder="ten@gmail.com" required />
+            <label for="mail-password">Mật khẩu ứng dụng</label>
+            <input id="mail-password" type="password" autocomplete="off" maxlength="256" />
+            <div class="actions"><button class="btn" type="submit">Lưu cấu hình</button></div>
+          </form>
+        </section>
+        <section class="card">
+          <h2>Kiểm tra gửi thư</h2>
+          <p class="muted">Lưu và bật cấu hình trước khi gửi email thử. Hãy kiểm tra cả thư rác nếu không thấy thư đến.</p>
+          <form id="test-form">
+            <label for="test-address">Email nhận thử</label>
+            <input id="test-address" type="email" maxlength="190" required />
+            <div class="actions"><button class="btn secondary" type="submit">Gửi email thử</button></div>
+          </form>
+          <p class="small muted">Email tài khoản người dùng cần được xác minh trước khi sử dụng chức năng quên mật khẩu. Tài khoản mẫu có thể thêm email trong trang Tài khoản.</p>
+        </section>
+      </div>
+      <section class="card mail-history">
+        <div class="section-heading registration-heading">
+          <div>
+            <h2>Lịch sử gửi thư</h2>
+            <p class="muted">50 lần gửi gần nhất. “SMTP đã nhận” chỉ xác nhận máy chủ gửi thư đã nhận yêu cầu, chưa xác nhận người nhận đã mở thư.</p>
+          </div>
+          <button class="btn secondary" id="refresh-deliveries" type="button">Cập nhật</button>
+        </div>
+        <div class="list-tools">
+          <div>
+            <label for="delivery-search">Tìm theo email hoặc loại thư</label>
+            <input id="delivery-search" type="search" placeholder="Email, vé QR, mời đánh giá..." />
+          </div>
+          <div>
+            <label for="delivery-status">Trạng thái</label>
+            <select id="delivery-status">
+              <option value="all">Tất cả</option>
+              <option value="SMTP_ACCEPTED">SMTP đã nhận</option>
+              <option value="FAILED">Gửi thất bại</option>
+              <option value="PENDING">Chưa rõ kết quả</option>
+            </select>
+          </div>
+        </div>
+        <p class="small muted" id="delivery-count" role="status"></p>
+        <div class="table-wrap scroll-list" tabindex="0" aria-label="Lịch sử gửi thư có thể cuộn">
+          <table>
+            <thead><tr><th>Thời điểm</th><th>Loại thư</th><th>Email nhận</th><th>Trạng thái</th><th>Ghi chú</th></tr></thead>
+            <tbody id="delivery-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card mail-history">
+        <h2>Hàng đợi gửi email</h2>
+        <p class="muted">Vé QR và lời mời đánh giá được theo dõi cùng một nơi. Lỗi tạm thời được thử lại sau 5 phút, tối đa 3 lần.</p>
+        <div class="list-tools">
+          <div><label for="job-type">Loại thư</label><select id="job-type"><option value="all">Tất cả</option><option value="TICKET">Vé QR</option><option value="SURVEY_INVITATION">Mời đánh giá</option></select></div>
+          <div><label for="job-status">Trạng thái</label><select id="job-status"><option value="all">Tất cả</option><option value="PENDING">Chờ gửi / thử lại</option><option value="PAUSED">Tạm dừng</option><option value="SMTP_ACCEPTED">SMTP đã nhận</option><option value="FAILED">Gửi thất bại</option><option value="SKIPPED">Bỏ qua</option></select></div>
+        </div>
+        <div class="table-wrap scroll-list" tabindex="0" aria-label="Hàng đợi gửi email">
+          <table>
+            <thead><tr><th>Loại thư</th><th>Sự kiện</th><th>Email nhận</th><th>Mã vé</th><th>Trạng thái</th><th>Số lần thử</th><th>Lần tiếp theo</th></tr></thead>
+            <tbody id="mail-job-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/js/mail-settings.js"></script>
+  </body>
+</html>

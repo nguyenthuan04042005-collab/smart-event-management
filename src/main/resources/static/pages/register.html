@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đăng ký · SEMS</title>
+    <link rel="stylesheet" href="/css/theme.css" />
+  </head>
+
+  <body class="app-page">
+    <header aria-label="Điều hướng"></header>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">01 / Tham gia sự kiện</span>
+        <h1>Hẹn gặp bạn tại sự kiện.</h1>
+        <p>Điền thông tin, nhận vé QR và sẵn sàng check-in.</p>
+      </section>
+      <div id="status" class="status"></div>
+      <div class="two">
+        <section class="card">
+          <span id="event-state" class="pill"></span>
+          <h1 id="event-title">Đang tải...</h1>
+          <p id="event-description"></p>
+          <p>
+            <strong>Địa điểm:</strong>
+            <span id="event-venue"></span>
+          </p>
+          <p>
+            <strong>Thời gian:</strong>
+            <span id="event-time"></span>
+          </p>
+          <p>
+            <strong>Số vé:</strong>
+            <span id="event-count"></span>
+          </p>
+        </section>
+        <section class="card">
+          <h2>Đăng ký vé miễn phí</h2>
+          <p class="muted">Mỗi tài khoản được đăng ký một vé cho sự kiện. Bạn có thể xem lại vé bất cứ lúc nào tại <a href="/pages/my-tickets.html">Vé của tôi</a>.</p>
+          <p class="muted small">Vé QR được gửi đến email tài khoản đã xác minh và lưu trong mục <a href="/pages/my-tickets.html">Vé của tôi</a>.</p>
+          <form id="register-form">
+            <label for="full-name">Họ tên</label>
+            <input id="full-name" maxlength="120" required />
+            <p><strong>Email nhận vé:</strong> <span id="ticket-email">Đang tải...</span></p>
+            <label for="phone">Số điện thoại</label>
+            <input id="phone" type="tel" maxlength="20" required />
+            <label for="organization">Đơn vị / công ty / trường <span class="muted small">(không bắt buộc)</span></label>
+            <input id="organization" maxlength="160" autocomplete="organization" />
+            <label for="position-title">Chức vụ / vai trò <span class="muted small">(không bắt buộc)</span></label>
+            <input id="position-title" maxlength="120" autocomplete="organization-title" />
+            <div class="actions"><button class="btn">Đăng ký và nhận vé QR</button></div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/js/register.js"></script>
+  </body>
+</html>
+
