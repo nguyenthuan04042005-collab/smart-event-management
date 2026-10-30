@@ -1,0 +1,1512 @@
+openapi: 3.0.3
+info:
+  title: Smart Event Management System (SEMS) API Specification
+  description: |
+    Tài liệu đặc tả API chuẩn (OpenAPI 3.0) dùng chung giữa Backend (Spring Boot) và Frontend.
+    Phục vụ quy trình phát triển song song (Contract-First Development & Mocking).
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local Spring Boot Server
+  - url: http://localhost:4010
+    description: Prism Mock Server (Dành cho Frontend phát triển độc lập)
+
+tags:
+  - name: Authentication & Account
+    description: Đăng nhập, đăng ký, xác thực OTP email, quản lý tài khoản cá nhân
+  - name: User Management (Admin)
+    description: Quản trị tài khoản nhân viên, phân quyền hệ thống
+  - name: Venues
+    description: Quản lý địa điểm tổ chức sự kiện
+  - name: Events (Public & Organizer)
+    description: Quản lý sự kiện, quy trình duyệt và vòng đời sự kiện
+  - name: Tickets & Registrations
+    description: Đăng ký tham gia, quản lý vé và mã QR
+  - name: Check-in Kiosk
+    description: Tra cứu vé và thực hiện điểm danh tại cổng
+  - name: Feedback
+    description: Đánh giá sự kiện và xem thống kê phản hồi
+  - name: Dashboard & Reports
+    description: Thống kê số liệu realtime và xuất báo cáo Excel/CSV
+  - name: Mail Settings
+    description: Cấu hình SMTP và kiểm tra gửi email
+
+paths:
+  /api/v1/auth/csrf:
+    get:
+      tags: [Authentication & Account]
+      summary: Lấy CSRF Token
+      responses:
+        '200':
+          description: CSRF Token thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "9a2f1c8e-3d4b-4a5c-8e2b-1a2b3c4d5e6f"
+
+  /api/v1/auth/login:
+    post:
+      tags: [Authentication & Account]
+      summary: Đăng nhập hệ thống (Form-urlencoded / Session Cookie)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  example: "organizer1"
+                password:
+                  type: string
+                  format: password
+                  example: "Password@123456"
+      responses:
+        '200':
+          description: Đăng nhập thành công (Set Cookie JSESSIONID)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: "organizer1"
+                  roles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        authority:
+                          type: string
+                          example: "ROLE_ORGANIZER"
+        '401':
+          description: Sai thông tin đăng nhập hoặc tài khoản bị khóa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorView'
+
+  /api/v1/auth/register:
+    post:
+      tags: [Authentication & Account]
+      summary: Đăng ký tài khoản người tham dự (Attendee)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAttendee'
+      responses:
+        '201':
+          description: Gửi mã OTP xác nhận về email thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartResult'
+        '400':
+          description: Dữ liệu không hợp lệ hoặc username/email đã tồn tại
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorView'
+
+  /api/v1/auth/confirm-registration:
+    post:
+      tags: [Authentication & Account]
+      summary: Xác nhận mã OTP để hoàn tất đăng ký tài khoản
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeInput'
+      responses:
+        '200':
+          description: Xác minh thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /api/v1/auth/resend-registration-code:
+    post:
+      tags: [Authentication & Account]
+      summary: Gửi lại mã OTP đăng ký
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestIdInput'
+      responses:
+        '200':
+          description: Đã gửi lại mã
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /api/v1/me:
+    get:
+      tags: [Authentication & Account]
+      summary: Lấy thông tin tài khoản đang đăng nhập
+      responses:
+        '200':
+          description: Thông tin người dùng hiện tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: "john_doe"
+                  displayName:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: "johndoe@example.com"
+                  emailVerified:
+                    type: boolean
+                    example: true
+                  roles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        authority:
+                          type: string
+                          example: "ROLE_ATTENDEE"
+
+  /api/v1/account/profile:
+    post:
+      tags: [Authentication & Account]
+      summary: Cập nhật tên hiển thị cá nhân
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserView'
+
+  /api/v1/account/change-password:
+    post:
+      tags: [Authentication & Account]
+      summary: Đổi mật khẩu cá nhân
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /api/v1/public/events:
+    get:
+      tags: [Events (Public & Organizer)]
+      summary: Danh sách sự kiện công khai đã phê duyệt
+      responses:
+        '200':
+          description: Danh sách sự kiện
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicEventView'
+
+  /api/v1/public/events/{id}:
+    get:
+      tags: [Events (Public & Organizer)]
+      summary: Xem chi tiết sự kiện công khai
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicEventView'
+        '404':
+          description: Không tìm thấy sự kiện
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorView'
+
+  /api/v1/events:
+    get:
+      tags: [Events (Public & Organizer)]
+      summary: Danh sách sự kiện dành cho ban tổ chức / quản trị viên
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventView'
+    post:
+      tags: [Events (Public & Organizer)]
+      summary: Tạo sự kiện mới (Bản nháp DRAFT)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+
+  /api/v1/events/{id}:
+    get:
+      tags: [Events (Public & Organizer)]
+      summary: Chi tiết sự kiện nội bộ
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+    put:
+      tags: [Events (Public & Organizer)]
+      summary: Cập nhật thông tin sự kiện
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+    delete:
+      tags: [Events (Public & Organizer)]
+      summary: Xóa sự kiện nháp
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Đã xóa thành công
+
+  /api/v1/events/{id}/submit:
+    post:
+      tags: [Events (Public & Organizer)]
+      summary: Gửi sự kiện yêu cầu phê duyệt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+
+  /api/v1/events/{id}/cancel:
+    post:
+      tags: [Events (Public & Organizer)]
+      summary: Hủy sự kiện
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+
+  /api/v1/admin/events/{id}/review:
+    post:
+      tags: [Events (Public & Organizer)]
+      summary: Admin phê duyệt hoặc từ chối sự kiện
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventView'
+
+  /api/v1/events/{eventId}/registrations:
+    post:
+      tags: [Tickets & Registrations]
+      summary: Đăng ký vé tham gia sự kiện (Attendee)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketView'
+    get:
+      tags: [Tickets & Registrations]
+      summary: Danh sách người đăng ký vé của sự kiện (Organizer/Admin)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketView'
+
+  /api/v1/tickets/mine:
+    get:
+      tags: [Tickets & Registrations]
+      summary: Lấy danh sách vé đã đăng ký của cá nhân tôi
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketView'
+
+  /api/v1/tickets/{code}:
+    get:
+      tags: [Tickets & Registrations]
+      summary: Chi tiết thông tin vé theo mã vé
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketView'
+
+  /api/v1/tickets/{code}/cancel:
+    post:
+      tags: [Tickets & Registrations]
+      summary: Hủy vé tham gia
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketView'
+
+  /api/v1/tickets/{code}/qr:
+    get:
+      tags: [Tickets & Registrations]
+      summary: Lấy hình ảnh mã QR Code của vé (PNG format)
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ảnh QR Code dạng image/png
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /api/v1/events/{eventId}/check-ins:
+    post:
+      tags: [Check-in Kiosk]
+      summary: Thực hiện check-in vé (Staff quét QR hoặc nhập mã vé)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckinInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckinResult'
+
+  /api/v1/events/{eventId}/check-ins/search:
+    get:
+      tags: [Check-in Kiosk]
+      summary: Tra cứu danh sách người tham dự để hỗ trợ check-in thủ công
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "Nguyen Van A"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckinSearchView'
+
+  /api/v1/events/{eventId}/dashboard:
+    get:
+      tags: [Dashboard & Reports]
+      summary: Thống kê số liệu sự kiện realtime (Tỉ lệ tham dự, số vé, cảnh báo)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardView'
+
+  /api/v1/tickets/{code}/feedback:
+    post:
+      tags: [Feedback]
+      summary: Gửi đánh giá sau khi đã tham dự sự kiện (Attendee)
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackView'
+
+  /api/v1/events/{eventId}/feedback:
+    get:
+      tags: [Feedback]
+      summary: Thống kê tổng quan đánh giá sự kiện (Điểm trung bình, phân bổ sao)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackSummary'
+
+  /api/v1/events/{eventId}/feedback/items:
+    get:
+      tags: [Feedback]
+      summary: Danh sách chi tiết các đánh giá của sự kiện (Có phân trang & lọc)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: rating
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackPage'
+
+  /api/v1/feedback/mine:
+    get:
+      tags: [Feedback]
+      summary: Danh sách các đánh giá tôi đã gửi
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MyFeedbackView'
+
+  /api/v1/venues:
+    get:
+      tags: [Venues]
+      summary: Danh sách địa điểm tổ chức
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VenueView'
+    post:
+      tags: [Venues]
+      summary: Tạo địa điểm tổ chức mới
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VenueInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VenueView'
+
+  /api/v1/venues/{id}:
+    put:
+      tags: [Venues]
+      summary: Cập nhật địa điểm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VenueInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VenueView'
+    delete:
+      tags: [Venues]
+      summary: Xóa địa điểm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Đã xóa thành công
+
+  /api/v1/venues/{id}/active:
+    patch:
+      tags: [Venues]
+      summary: Bật/Tắt trạng thái hoạt động của địa điểm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActiveInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VenueView'
+
+  /api/v1/events/{eventId}/reports/feedback.xlsx:
+    get:
+      tags: [Dashboard & Reports]
+      summary: Xuất báo cáo đánh giá ra file Excel (.xlsx)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Tải về file Excel
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+
+  /api/v1/events/{eventId}/reports/{type}:
+    get:
+      tags: [Dashboard & Reports]
+      summary: Xuất dữ liệu ra file CSV (registrations, checkins, ...)
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [registrations, checkins, tickets]
+      responses:
+        '200':
+          description: Tệp CSV UTF-8
+          content:
+            text/csv:
+              schema:
+                type: string
+
+components:
+  schemas:
+    NewAttendee:
+      type: object
+      required: [username, displayName, email, password]
+      properties:
+        username:
+          type: string
+          example: "nguyenvana"
+        displayName:
+          type: string
+          example: "Nguyễn Văn A"
+        email:
+          type: string
+          format: email
+          example: "vana@gmail.com"
+        password:
+          type: string
+          format: password
+          example: "SecurePass@123"
+
+    StartResult:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        expiresAt:
+          type: string
+          format: date-time
+        debugCode:
+          type: string
+          nullable: true
+          example: "123456"
+
+    CodeInput:
+      type: object
+      required: [requestId, code]
+      properties:
+        requestId:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        code:
+          type: string
+          example: "123456"
+
+    RequestIdInput:
+      type: object
+      required: [requestId]
+      properties:
+        requestId:
+          type: string
+
+    ProfileInput:
+      type: object
+      required: [displayName]
+      properties:
+        displayName:
+          type: string
+          example: "Nguyễn Văn A (Cập nhật)"
+
+    ChangePasswordInput:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
+
+    UserView:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: "admin"
+        displayName:
+          type: string
+          example: "Hệ thống Quản trị"
+        email:
+          type: string
+          example: "admin@example.com"
+        emailVerified:
+          type: boolean
+          example: true
+        active:
+          type: boolean
+          example: true
+        roles:
+          type: array
+          items:
+            type: string
+          example: ["ADMIN"]
+
+    ActiveInput:
+      type: object
+      required: [active]
+      properties:
+        active:
+          type: boolean
+          example: true
+
+    AgendaInput:
+      type: object
+      required: [title, startsAt, endsAt]
+      properties:
+        title:
+          type: string
+          example: "Phát biểu khai mạc"
+        startsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T08:30:00"
+        endsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T09:00:00"
+        roomName:
+          type: string
+          example: "Hội trường A"
+
+    AgendaView:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Phát biểu khai mạc"
+        startsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T08:30:00"
+        endsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T09:00:00"
+        roomName:
+          type: string
+          example: "Hội trường A"
+
+    SpeakerInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          example: "TS. Trần Văn B"
+        biography:
+          type: string
+          example: "Chuyên gia AI hàng đầu"
+        topic:
+          type: string
+          example: "Xu hướng AI 2026"
+        imageUrl:
+          type: string
+          example: "https://example.com/speaker.jpg"
+        vip:
+          type: boolean
+          example: true
+
+    SpeakerView:
+      type: object
+      properties:
+        name:
+          type: string
+        biography:
+          type: string
+        topic:
+          type: string
+        imageUrl:
+          type: string
+        vip:
+          type: boolean
+
+    EventInput:
+      type: object
+      required: [title, startsAt, endsAt, capacity, status]
+      properties:
+        title:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        description:
+          type: string
+          example: "Diễn đàn chia sẻ công nghệ AI thế hệ mới..."
+        venueId:
+          type: integer
+          format: int64
+          example: 1
+        startsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T08:00:00"
+        endsAt:
+          type: string
+          format: date-time
+          example: "2026-11-15T17:00:00"
+        capacity:
+          type: integer
+          example: 200
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+          example: "DRAFT"
+        bannerUrl:
+          type: string
+          example: "https://example.com/banner.png"
+        category:
+          type: string
+          example: "CÔNG NGHỆ"
+        onlineUrl:
+          type: string
+          example: "https://meet.google.com/abc-xyz"
+        agenda:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgendaInput'
+        speakers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakerInput'
+
+    EventView:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        description:
+          type: string
+        venueId:
+          type: integer
+          format: int64
+        venueName:
+          type: string
+          example: "Trung tâm Hội nghị Quốc gia"
+        venueAddress:
+          type: string
+          example: "Hà Nội"
+        startsAt:
+          type: string
+          format: date-time
+        endsAt:
+          type: string
+          format: date-time
+        capacity:
+          type: integer
+          example: 200
+        status:
+          type: string
+          example: "APPROVED"
+        registered:
+          type: integer
+          format: int64
+          example: 85
+        organizerName:
+          type: string
+          example: "Nguyễn Tổ Chức"
+        approvalStatus:
+          type: string
+          example: "APPROVED"
+        reviewNote:
+          type: string
+        bannerUrl:
+          type: string
+        category:
+          type: string
+        onlineUrl:
+          type: string
+        agenda:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgendaView'
+        speakers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakerView'
+        lifecycleStatus:
+          type: string
+          example: "UPCOMING"
+        cancelReason:
+          type: string
+        cancelledAt:
+          type: string
+          format: date-time
+        ticketHistoryCount:
+          type: integer
+          format: int64
+
+    PublicEventView:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        description:
+          type: string
+        venueName:
+          type: string
+        venueAddress:
+          type: string
+        startsAt:
+          type: string
+          format: date-time
+        endsAt:
+          type: string
+          format: date-time
+        capacity:
+          type: integer
+        status:
+          type: string
+        registered:
+          type: integer
+          format: int64
+        organizerName:
+          type: string
+        bannerUrl:
+          type: string
+        category:
+          type: string
+        agenda:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgendaView'
+        speakers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakerView'
+        lifecycleStatus:
+          type: string
+        cancelReason:
+          type: string
+
+    RegistrationInput:
+      type: object
+      required: [fullName, phone]
+      properties:
+        fullName:
+          type: string
+          example: "Lê Văn C"
+        phone:
+          type: string
+          example: "0912345678"
+        organization:
+          type: string
+          example: "Đại học Bách Khoa"
+        positionTitle:
+          type: string
+          example: "Sinh viên"
+
+    TicketView:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "TK-2026-XYZ123"
+        eventId:
+          type: integer
+          format: int64
+          example: 10
+        eventTitle:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        attendeeName:
+          type: string
+          example: "Lê Văn C"
+        attendeeEmail:
+          type: string
+          example: "levanc@example.com"
+        attendeeOrganization:
+          type: string
+          example: "Đại học Bách Khoa"
+        attendeePositionTitle:
+          type: string
+          example: "Sinh viên"
+        status:
+          type: string
+          example: "CONFIRMED"
+        startsAt:
+          type: string
+          format: date-time
+        venueName:
+          type: string
+        onlineUrl:
+          type: string
+        checkedInAt:
+          type: string
+          format: date-time
+          nullable: true
+        cancelledAt:
+          type: string
+          format: date-time
+          nullable: true
+        feedbackSent:
+          type: boolean
+          example: false
+        eventLifecycleStatus:
+          type: string
+        eventCancelReason:
+          type: string
+
+    CheckinInput:
+      type: object
+      required: [method]
+      properties:
+        qrToken:
+          type: string
+          nullable: true
+          example: "qr-token-uuid-12345"
+        ticketCode:
+          type: string
+          nullable: true
+          example: "TK-2026-XYZ123"
+        method:
+          type: string
+          enum: [QR_SCAN, MANUAL]
+          example: "QR_SCAN"
+
+    CheckinResult:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Check-in thành công!"
+        attendeeName:
+          type: string
+          example: "Lê Văn C"
+        ticketCode:
+          type: string
+          example: "TK-2026-XYZ123"
+        checkedInAt:
+          type: string
+          format: date-time
+
+    CheckinCandidate:
+      type: object
+      properties:
+        attendeeName:
+          type: string
+        attendeeEmail:
+          type: string
+        ticketCode:
+          type: string
+        status:
+          type: string
+
+    CheckinSearchView:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckinCandidate'
+        page:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          format: int64
+          example: 25
+
+    DashboardView:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+          example: 10
+        eventTitle:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        capacity:
+          type: integer
+          example: 200
+        registered:
+          type: integer
+          format: int64
+          example: 150
+        checkedIn:
+          type: integer
+          format: int64
+          example: 120
+        attendanceRate:
+          type: number
+          format: double
+          example: 80.0
+        occupancyRate:
+          type: number
+          format: double
+          example: 60.0
+        occupancyAlert:
+          type: string
+          nullable: true
+        eventLifecycleStatus:
+          type: string
+          example: "HAPPENING"
+        eventCancelReason:
+          type: string
+          nullable: true
+
+    FeedbackInput:
+      type: object
+      required: [rating]
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        comment:
+          type: string
+          maxLength: 1000
+          example: "Sự kiện được tổ chức rất chuyên nghiệp và bổ ích!"
+
+    FeedbackView:
+      type: object
+      properties:
+        attendeeName:
+          type: string
+          example: "Lê Văn C"
+        rating:
+          type: integer
+          example: 5
+        comment:
+          type: string
+          example: "Sự kiện rất tuyệt vời!"
+        createdAt:
+          type: string
+          format: date-time
+
+    FeedbackSummary:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 45
+        averageRating:
+          type: number
+          format: double
+          example: 4.8
+        ratings:
+          type: array
+          items:
+            type: object
+            properties:
+              rating:
+                type: integer
+              count:
+                type: integer
+                format: int64
+              percentage:
+                type: number
+                format: double
+        trendInterval:
+          type: string
+          example: "HOUR"
+        trend:
+          type: array
+          items:
+            type: object
+            properties:
+              period:
+                type: string
+                format: date-time
+              count:
+                type: integer
+                format: int64
+              averageRating:
+                type: number
+                format: double
+
+    FeedbackPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackView'
+        page:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          format: int64
+          example: 45
+
+    MyFeedbackView:
+      type: object
+      properties:
+        ticketCode:
+          type: string
+          example: "TK-2026-XYZ123"
+        eventTitle:
+          type: string
+          example: "Hội thảo Trí tuệ Nhân tạo 2026"
+        rating:
+          type: integer
+          example: 5
+        comment:
+          type: string
+          example: "Nội dung chất lượng!"
+        createdAt:
+          type: string
+          format: date-time
+
+    VenueInput:
+      type: object
+      required: [name, address, capacity]
+      properties:
+        name:
+          type: string
+          example: "Hội trường Hoa Sen"
+        address:
+          type: string
+          example: "Số 1 Đại Cồ Việt, Hà Nội"
+        capacity:
+          type: integer
+          minimum: 1
+          example: 300
+
+    VenueView:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Hội trường Hoa Sen"
+        address:
+          type: string
+          example: "Số 1 Đại Cồ Việt, Hà Nội"
+        organizerName:
+          type: string
+          example: "Ban Tổ Chức A"
+        capacity:
+          type: integer
+          example: 300
+        eventCount:
+          type: integer
+          format: int64
+          example: 3
+        approvedEventCount:
+          type: integer
+          format: int64
+          example: 2
+        active:
+          type: boolean
+          example: true
+
+    ReviewInput:
+      type: object
+      required: [decision]
+      properties:
+        decision:
+          type: string
+          enum: [APPROVE, REJECT]
+          example: "APPROVE"
+        note:
+          type: string
+          example: "Đã duyệt thông tin sự kiện."
+
+    CancelInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          example: "Hủy sự kiện do thời tiết xấu"
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Thao tác thành công."
+
+    ErrorView:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Yêu cầu không hợp lệ hoặc không có quyền truy cập"
+        timestamp:
+          type: string
+          format: date-time
